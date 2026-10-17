@@ -1,0 +1,20 @@
+{% extends "base.html" %}
+{% block title %}Галерея{% endblock %}
+{% block content %}
+<div class="head"><h1>Галерея</h1></div>
+{% if is_admin %}
+<form class="card inline" method="post" action="{{ url_for('album_new') }}">
+  <input name="title" placeholder="Название нового альбома (например, «Игра 12 октября»)" required>
+  <button class="btn">Создать альбом</button>
+</form>
+{% endif %}
+<div class="albums">
+  {% for a in albums %}
+  <a class="card album-card" href="{{ url_for('album', album_id=a.id) }}">
+    {% if a.cover %}<img src="{{ photo_url(a.cover) }}" alt="">
+    {% else %}<div class="empty">📷</div>{% endif %}
+    <div class="body"><b>{{ a.title }}</b><span class="muted">{{ a.cnt }} фото</span></div>
+  </a>
+  {% else %}<p class="muted">Альбомов пока нет{{ '' if is_admin else ' — их создаёт администратор' }}.</p>{% endfor %}
+</div>
+{% endblock %}

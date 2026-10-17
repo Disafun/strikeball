@@ -1,0 +1,27 @@
+{% extends "base.html" %}
+{% block title %}{{ album.title }}{% endblock %}
+{% block content %}
+<div class="head">
+  <h1>{{ album.title }}</h1>
+  <div class="actions">
+    <a class="btn ghost" href="{{ url_for('gallery') }}">← Все альбомы</a>
+    {% if is_admin %}<form method="post" action="{{ url_for('album_delete', album_id=album.id) }}" onsubmit="return confirm('Удалить альбом со всеми фото?')"><button class="btn danger">Удалить альбом</button></form>{% endif %}
+  </div>
+</div>
+<form class="card inline" method="post" action="{{ url_for('photo_upload', album_id=album.id) }}" enctype="multipart/form-data">
+  <input type="file" name="photos" accept="image/*" multiple required>
+  <button class="btn">Загрузить фото</button>
+</form>
+<div class="photos">
+  {% for p in photos %}
+  <figure>
+    <a href="{{ photo_url(p.path) }}" target="_blank"><img src="{{ photo_url(p.path) }}" loading="lazy" alt=""></a>
+    <figcaption>{{ p.full_name or 'Администратор' }}
+      {% if is_admin or (me and p.user_id == me.id) %}
+      <form method="post" action="{{ url_for('photo_delete', photo_id=p.id) }}" onsubmit="return confirm('Удалить фото?')"><button class="x">✕</button></form>
+      {% endif %}
+    </figcaption>
+  </figure>
+  {% else %}<p class="muted">В альбоме пока пусто. Загрузите первое фото!</p>{% endfor %}
+</div>
+{% endblock %}

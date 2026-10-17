@@ -1,0 +1,33 @@
+{% extends "base.html" %}
+{% block title %}Статус команды{% endblock %}
+{% block content %}
+<h1>Статус команды</h1>
+{% if not event %}
+  <p class="muted">Нет предстоящих мероприятий.</p>
+{% else %}
+  <form method="get" class="inline">
+    <select name="event_id" onchange="this.form.submit()">
+      {% for e in events %}<option value="{{ e.id }}" {{ 'selected' if e.id == event.id }}>{{ e.title }} — {{ e.event_date|dt }}</option>{% endfor %}
+    </select>
+  </form>
+  <p class="meta big-count">Записалось: <b>{{ players|length }}</b>{% if event.max_players %} из {{ event.max_players }}{% endif %}</p>
+  {% if players %}
+  <div class="tablewrap"><table>
+    <tr><th>#</th><th></th><th>ФИО</th><th>Возраст</th>{% if is_admin %}<th>Телефон</th><th>Почта</th><th></th>{% endif %}</tr>
+    {% for p in players %}
+    <tr>
+      <td>{{ loop.index }}</td>
+      <td>{% if p.photo %}<img class="avatar" src="{{ photo_url(p.photo) }}" alt="">
+          {% else %}<span class="avatar ph">{{ p.full_name[0] }}</span>{% endif %}</td>
+      <td>{{ p.full_name }}</td><td>{{ p.age }}</td>
+      {% if is_admin %}
+      <td>{{ p.phone }}</td><td>{{ p.email }}</td>
+      <td><form method="post" action="{{ url_for('event_kick', event_id=event.id, user_id=p.id) }}" onsubmit="return confirm('Убрать игрока?')"><button class="btn small danger">✕</button></form></td>
+      {% endif %}
+    </tr>
+    {% endfor %}
+  </table></div>
+  {% else %}<p class="muted">Пока никто не записался.</p>{% endif %}
+{% endif %}
+{% endblock %}
+{% block scripts %}<script>setInterval(function(){ if(!document.hidden) location.reload(); }, 20000);</script>{% endblock %}

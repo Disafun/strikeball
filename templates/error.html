@@ -1,0 +1,10 @@
+{% extends "base.html" %}
+{% block title %}Ошибка{% endblock %}
+{% block content %}
+<div class="narrow card">
+  <h1>Что-то пошло не так</h1>
+  <p>{{ message }}</p>
+  <a class="btn" href="javascript:location.reload()">Повторить</a>
+  <a class="btn ghost" href="{{ url_for('index') }}">На главную</a>
+</div>
+{% endblock %}

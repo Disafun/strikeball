@@ -1,0 +1,33 @@
+<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>{% block title %}Страйкбол{% endblock %}</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+{% if authed %}
+<header class="nav">
+  <a class="brand" href="{{ url_for('index') }}">🎯 Страйкбол</a>
+  <nav>
+    <a href="{{ url_for('index') }}" class="{{ 'on' if request.endpoint in ('index','event_new','event_edit') }}">Мероприятия</a>
+    <a href="{{ url_for('gallery') }}" class="{{ 'on' if request.endpoint in ('gallery','album') }}">Галерея</a>
+    <a href="{{ url_for('team') }}" class="{{ 'on' if request.endpoint == 'team' }}">Статус команды</a>
+  </nav>
+  <div class="who">
+    {% if is_admin %}<span class="badge">Админ</span>
+    {% else %}<a href="{{ url_for('profile') }}">{{ me.full_name.split()[0] if me else '' }}</a>{% endif %}
+    <a class="out" href="{{ url_for('logout') }}">Выйти</a>
+  </div>
+</header>
+{% endif %}
+<main class="wrap">
+  {% with msgs = get_flashed_messages(with_categories=true) %}
+    {% for cat, m in msgs %}<div class="flash {{ cat }}">{{ m }}</div>{% endfor %}
+  {% endwith %}
+  {% block content %}{% endblock %}
+</main>
+{% block scripts %}{% endblock %}
+</body>
+</html>

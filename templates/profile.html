@@ -1,0 +1,36 @@
+{% extends "base.html" %}
+{% block title %}Профиль{% endblock %}
+{% block content %}
+<div class="narrow">
+  <h1>{{ {'register': 'Регистрация', 'complete': 'Заполните профиль', 'edit': 'Мой профиль'}[mode] }}</h1>
+  <form class="card" method="post" enctype="multipart/form-data">
+    {% if user and user.photo %}<img class="avatar big" src="{{ photo_url(user.photo) }}" alt="">{% endif %}
+    {% if mode == 'register' %}
+      <label>Почта</label>
+      <input type="email" name="email" value="{{ email }}" required>
+      <label>Пароль (минимум 6 символов)</label>
+      <input type="password" name="password" minlength="6" autocomplete="new-password" required>
+    {% elif mode == 'edit' %}
+      <label>Почта</label>
+      <input type="email" value="{{ email }}" disabled>
+    {% endif %}
+    <label>ФИО</label>
+    <input name="full_name" value="{{ request.form.get('full_name', user.full_name if user else '') }}" placeholder="Иванов Иван Иванович" required>
+    <label>Возраст</label>
+    <input type="number" name="age" min="10" max="99" value="{{ request.form.get('age', user.age if user else '') }}" required>
+    <label>Номер телефона</label>
+    <input type="tel" name="phone" value="{{ request.form.get('phone', user.phone if user else '') }}" placeholder="+7 700 000 00 00" required>
+    <label>Фото {{ '(выберите, чтобы заменить)' if mode == 'edit' else '(необязательно)' }}</label>
+    <input type="file" name="photo" accept="image/*">
+    <button class="btn">{{ 'Сохранить' if mode == 'edit' else 'Создать профиль' }}</button>
+    {% if mode == 'register' %}<p class="muted"><a href="{{ url_for('login') }}">Уже есть аккаунт? Войти</a></p>{% endif %}
+  </form>
+  {% if mode == 'edit' %}
+  <form class="card" method="post" action="{{ url_for('change_password') }}">
+    <h2>Сменить пароль</h2>
+    <input type="password" name="password" minlength="6" placeholder="Новый пароль" autocomplete="new-password" required>
+    <button class="btn">Изменить пароль</button>
+  </form>
+  {% endif %}
+</div>
+{% endblock %}

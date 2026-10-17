@@ -1,0 +1,27 @@
+{% extends "base.html" %}
+{% block title %}Мероприятие{% endblock %}
+{% block content %}
+<div class="narrow">
+  <h1>{{ 'Редактирование мероприятия' if event else 'Новое мероприятие' }}</h1>
+  <form class="card" method="post" enctype="multipart/form-data">
+    {% if event and event.photo %}<img class="cover" src="{{ photo_url(event.photo) }}" alt="">{% endif %}
+    <label>Название</label>
+    <input name="title" value="{{ request.form.get('title', event.title if event else '') }}" required>
+    <label>Дата и время</label>
+    <input type="datetime-local" name="event_date" value="{{ request.form.get('event_date', date_value) }}" required>
+    <label>Место проведения</label>
+    <input name="location" value="{{ request.form.get('location', event.location if event else '') }}">
+    <label>Описание</label>
+    <textarea name="description" rows="5">{{ request.form.get('description', event.description if event else '') }}</textarea>
+    <label>Максимум игроков (пусто — без лимита)</label>
+    <input type="number" name="max_players" min="1" value="{{ request.form.get('max_players', event.max_players if event and event.max_players else '') }}">
+    <label>Фото {{ '(выберите, чтобы заменить)' if event else '' }}</label>
+    <input type="file" name="photo" accept="image/*">
+    {% if event %}<label><input type="checkbox" name="cancelled" value="1" style="width:auto" {{ 'checked' if event.status == 'cancelled' }}> Мероприятие отменено (запись закрыта)</label>{% endif %}
+    <div class="actions">
+      <button class="btn">Сохранить</button>
+      <a class="btn ghost" href="{{ url_for('index') }}">Отмена</a>
+    </div>
+  </form>
+</div>
+{% endblock %}

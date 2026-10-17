@@ -1,0 +1,26 @@
+<article class="card event">
+  {% if e.photo %}<img class="cover" src="{{ photo_url(e.photo) }}" alt="">{% endif %}
+  <div class="body">
+    <h3>{{ e.title }} {% if e.status == 'cancelled' %}<span class="badge">Отменено</span>{% endif %}</h3>
+    <p class="meta">📅 {{ e.event_date|dt }}{% if e.location %} · 📍 {{ e.location }}{% endif %}</p>
+    {% if e.description %}<p>{{ e.description }}</p>{% endif %}
+    <p class="meta">👥 Записано: {{ e.cnt }}{% if e.max_players %} / {{ e.max_players }}{% endif %}</p>
+    <div class="actions">
+      {% if is_admin %}
+        <a class="btn small" href="{{ url_for('event_edit', event_id=e.id) }}">Редактировать</a>
+        <a class="btn small ghost" href="{{ url_for('team', event_id=e.id) }}">Состав</a>
+        <form method="post" action="{{ url_for('event_delete', event_id=e.id) }}" onsubmit="return confirm('Удалить мероприятие?')">
+          <button class="btn small danger">Удалить</button></form>
+      {% elif not past and e.status != 'cancelled' %}
+        {% if e.id in joined %}
+          <span class="badge ok">Вы записаны</span>
+          <form method="post" action="{{ url_for('event_leave', event_id=e.id) }}"><button class="btn small ghost">Отменить</button></form>
+        {% elif e.max_players and e.cnt >= e.max_players %}
+          <span class="badge">Мест нет</span>
+        {% else %}
+          <form method="post" action="{{ url_for('event_join', event_id=e.id) }}"><button class="btn small">Записаться</button></form>
+        {% endif %}
+      {% endif %}
+    </div>
+  </div>
+</article>

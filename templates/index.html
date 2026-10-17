@@ -1,0 +1,18 @@
+{% extends "base.html" %}
+{% block title %}Мероприятия{% endblock %}
+{% block content %}
+<div class="head">
+  <h1>Предстоящие игры</h1>
+  {% if is_admin %}<a class="btn" href="{{ url_for('event_new') }}">+ Создать мероприятие</a>{% endif %}
+</div>
+{% set past = False %}
+{% for e in upcoming %}{% include "_event_card.html" %}
+{% else %}<p class="muted">Пока нет запланированных мероприятий.</p>{% endfor %}
+
+{% if past_events %}
+<h2 class="sep">Прошедшие</h2>
+{% set past = True %}
+{% for e in past_events %}{% include "_event_card.html" %}{% endfor %}
+{% endif %}
+{% endblock %}
+{% block scripts %}<script>setInterval(function(){ if(!document.hidden) location.reload(); }, 20000);</script>{% endblock %}

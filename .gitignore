@@ -1,0 +1,6 @@
+.env
+strikeball.db
+__pycache__/
+*.pyc
+migrated_users_temp_passwords.csv
+old_data/

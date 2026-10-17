@@ -1,0 +1,24 @@
+{% extends "base.html" %}
+{% block title %}Вход{% endblock %}
+{% block content %}
+<div class="login">
+  <h1>🎯 Страйкбол-клуб</h1>
+  <p class="muted">Запись на игры, галерея и состав команды</p>
+  <div class="grid2">
+    <form class="card" method="post" action="{{ url_for('login_user') }}">
+      <h2>Я игрок</h2>
+      <p class="muted">Войдите по почте и паролю.</p>
+      <input type="email" name="email" placeholder="you@example.com" autocomplete="username" required>
+      <input type="password" name="password" placeholder="Пароль" autocomplete="current-password" required>
+      <button class="btn">Войти</button>
+      <p class="muted">Здесь впервые? <a href="{{ url_for('register') }}">Создать профиль</a></p>
+    </form>
+    <form class="card" method="post" action="{{ url_for('login_admin') }}">
+      <h2>Я администратор</h2>
+      <p class="muted">Вход по паролю.</p>
+      <input type="password" name="password" placeholder="Пароль" required>
+      <button class="btn dark">Войти</button>
+    </form>
+  </div>
+</div>
+{% endblock %}
